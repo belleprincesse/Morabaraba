@@ -1,9 +1,0 @@
-C:\Users\g12n1275\source\repos\marabba\marabba\bin\Debug\marabba.exe.config
-C:\Users\g12n1275\source\repos\marabba\marabba\bin\Debug\marabba.XML
-C:\Users\g12n1275\source\repos\marabba\marabba\bin\Debug\marabba.exe
-C:\Users\g12n1275\source\repos\marabba\marabba\bin\Debug\marabba.pdb
-C:\Users\g12n1275\source\repos\marabba\marabba\bin\Debug\FSharp.Core.dll
-C:\Users\g12n1275\source\repos\marabba\marabba\bin\Debug\System.ValueTuple.dll
-C:\Users\g12n1275\source\repos\marabba\marabba\bin\Debug\FSharp.Core.xml
-C:\Users\g12n1275\source\repos\marabba\marabba\obj\Debug\marabba.exe
-C:\Users\g12n1275\source\repos\marabba\marabba\obj\Debug\marabba.pdb
