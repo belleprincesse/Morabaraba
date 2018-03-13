@@ -7,30 +7,36 @@ open System
 type Player =
 | P             //different colours
 | O
-| Blank
 
-type Player_info =
+
+type PlayerInfo =
    { Name : Player
-     placement_list : string list
-     Mill : string list
-     Cow_numbers: int}
+     IntitalCows : int
+     MillHas : (char*int) list
+     Cows: (char*int) list
+   }
+
+ type Game = 
+   { 
+    p1: PlayerInfo
+    p2: PlayerInfo
+   }
+
+
+  type GameResult =
+  | Winner | Ongoing | Draw
 
 let swapPlayer x =
     match x with
     | P -> O
     | O -> P
-    | Blank -> failwith "no player was chosen"
-
-
-(*let information ()=
-  let player_p = {Name= Player.P; placement_list= []; Mill=[]; Cow_numbers=0}
-  let player_O = {Name= Player.O; placement_list= []; Mill=[]; Cow_numbers=0}*)
-  
+   
 
 let initiallist = [ "a1";"a4"; "a7";"b2";"b4";"b6"; "c3";"c4";"c5"; "d1";"d2";"d3";"d5";"d6";"d7"; "e3"; "e4"; "e5";"f2";"f4";"f6"; "g1"; "g4"; "g7"] 
 
 
 let printboard (b:string list) =     //passing the list in
+
   printfn "  1   2   3      4    5    6   7   
            a %s------------%s-----------%s
              | \           |           / |
@@ -99,7 +105,30 @@ let printboard (b:string list) =     //passing the list in
           | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O";_;_] -> Some  (["a7";"b6";"c5"])
           | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O"] -> Some (["e5";"f6";"g7"])
           | _ -> None
-    | _ -> None*)
+    | _ -> None *)
+let validposition place inputlist turn iteration =
+   let rec ispositiontaken position mainlist whose_turn =
+         match List.exists((=) position) mainlist with
+         | false -> 
+                match iteration with
+                | 24 -> position
+                | _  ->
+                      printfn "%A choose another option, clearly it is taken or not part of the list." whose_turn
+                      let place = System.Console.ReadLine()
+                      let b = ispositiontaken place mainlist whose_turn 
+                      b  
+         | _ -> position
+   ispositiontaken place inputlist turn
+   
+    
+let whichplayerinput (whoseplaying:Game) position player_turn=
+   match player_turn with 
+    | P ->
+         let c = {p1={whoseplaying.p1 with IntitalCows=whoseplaying.p2.IntitalCows+1; Cows =position::[]}; p2= {whoseplaying.p2 with IntitalCows=whoseplaying.p2.IntitalCows; Cows = whoseplaying.p2.Cows}}
+         c 
+    | O ->
+         let c = {p1= {whoseplaying.p1 with IntitalCows=whoseplaying.p1.IntitalCows; Cows = whoseplaying.p1.Cows}; p2= {whoseplaying.p2 with IntitalCows= whoseplaying.p2.IntitalCows+1; Cows =position::[]}}
+         c
 
 let index (mylists:string list) (number:string) (player:Player) =
   let rec placement (mylist:string list) (letter:string)  (newlist:string list) (playername:Player)  =
@@ -109,29 +138,41 @@ let index (mylists:string list) (number:string) (player:Player) =
          match x=letter with
          |true->
                 match playername with 
-                |P-> placement rest letter ("P"::newlist) playername
-                |O-> placement rest letter ("O"::newlist) playername
-                |_->failwith "mmmh whats this"
+                | P-> placement rest letter ("P"::newlist) playername
+                | O-> placement rest letter ("O"::newlist) playername
+                
                
          |_ -> placement rest letter (x::newlist) playername 
   placement mylists number [] player
 
 let playing_initate input = 
-    printfn "enter any key to begin the game"  //function puts in the position of the cows
+    printfn "Enter any key to begin the game" //function puts in the position of the cows
     printboard input
+    let p = {Name= P; IntitalCows= 0 ; MillHas= []; Cows =[]}
+    let O = {Name= O; IntitalCows= 0 ; MillHas= []; Cows =[]}
+    let playerdata = {p1=p;p2=O}
     System.Console.ReadKey()|>ignore
     let whoseturn = Player.P
-    let rec counter iteration whose_turn inputlist =
-        
+    let rec counter iteration whose_turn inputlist gameplayers =
+            
          printfn "%A's turn.  Type the number of the cell that you want to play into." whose_turn
-         let position = System.Console.ReadLine()
-         match iteration with
-         | 24 -> inputlist
-         | _  -> let output = index inputlist position whose_turn
+         let position = validposition (System.Console.ReadLine()) inputlist whose_turn iteration
+         let _, stringconversionint = System.Int32.TryParse ((sprintf "%c" position.[1]))
+         let constrain = position.[0],stringconversionint
+         match iteration, gameplayers.p1.IntitalCows with
+         | 24, 12 -> 
+                     inputlist
+         | _, _   -> 
+                 let output = index inputlist position whose_turn
+                 let updateplayers = whichplayerinput gameplayers constrain whose_turn
+                 Console.Clear()
                  printboard output
-                 counter (iteration+1) (swapPlayer(whose_turn)) output
-    counter 0 whoseturn input
+                 counter (iteration+1) (swapPlayer(whose_turn)) output updateplayers
+    counter 0 whoseturn input playerdata
 
+
+
+   
 
  
 
@@ -202,6 +243,7 @@ let position initiallist =
 let main argv = 
     
     playing_initate initiallist |> printboard
+   
    
     System.Console.ReadKey()|>ignore
     (*printboard initiallist

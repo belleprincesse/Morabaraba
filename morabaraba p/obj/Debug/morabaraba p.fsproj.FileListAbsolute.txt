@@ -21,3 +21,26 @@ C:\Users\g16l0585\source\repos\morabaraba p\morabaraba p\bin\Debug\ru\FSharp.Cor
 C:\Users\g16l0585\source\repos\morabaraba p\morabaraba p\bin\Debug\tr\FSharp.Core.resources.dll
 C:\Users\g16l0585\source\repos\morabaraba p\morabaraba p\bin\Debug\zh-Hans\FSharp.Core.resources.dll
 C:\Users\g16l0585\source\repos\morabaraba p\morabaraba p\bin\Debug\zh-Hant\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\morabaraba_p.exe.config
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\morabaraba_p.XML
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\morabaraba_p.exe
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\morabaraba_p.pdb
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\FSharp.Core.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\System.ValueTuple.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\FSharp.Core.xml
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\cs\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\de\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\en\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\es\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\fr\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\it\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\ja\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\ko\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\pl\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\pt-BR\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\ru\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\tr\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\zh-Hans\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\bin\Debug\zh-Hant\FSharp.Core.resources.dll
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\obj\Debug\morabaraba_p.exe
+\\ict.ru.ac.za\DFS\UGHomes\g16l0585\Desktop\Morabaraba\Morabaraba-\morabaraba p\obj\Debug\morabaraba_p.pdb
