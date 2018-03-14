@@ -57,55 +57,86 @@ let printboard (b:string list) =     //passing the list in
            g |%s----------%s------------%s" b.[0]  b.[1]  b.[2]  b.[3] b.[4] b.[5] b.[6] b.[7] b.[8] b.[9] b.[10] b.[11] b.[12] b.[13]  b.[14] b.[15] b.[16] b.[17] b.[18] b.[19] b.[20] b.[21] b.[22] b.[23]
 
 
-(*let Mill_Formation list player =   // checks if a mill formation occured
-    match player with
-    | P ->
-          match list with
-          | ["P";"P";"P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["a1";"a2";"a4"])  //horizontal case
-          | [ _;_;_; "P";"P";"P"; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["b2";"b4";"b6"])
-          | [ _;_; _;_;_;_; "P";"P";"P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["c3";"c4";"c5"])
-          | [ _;_; _;_;_;_; _;_;_;"P";"P";"P";_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["d1";"d2";"d3"])
-          | [ _;_;_;_;_;_;_;_;_;_;_;_;"P";"P";"P";_;_;_;_;_;_;_;_;_] -> Some (["d5";"d6";"d7"])
-          | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;"P";"P";"P";_;_;_;_;_;_]-> Some (["e3"; "e4"; "e5"])
-          | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;"P";"P";"P";_;_;_]-> Some (["f2";"f4";"f6"])
-          | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_; _;_;_; "P";"P";"P"] -> Some (["g1"; "g4"; "g7"])
-          | [ "P";_;_;_;_;_;_;_;_; "P";_;_;_;_;_;_;_;_;_;_;_;"P";_;_] -> Some (["a1";"d1";"g1"])   //vertical cases
-          | [ _;_; _;"P";_;_;_;_;_;_;"P";_;_;_;_;_;_;_;"P";_;_; _;_;_] -> Some (["b2";"d2";"f2"])
-          | [ _;_;_;_;_;_; "P";_;_;_;_;"P";_;_;_; "P";_;_;_;_;_;_;_;_] -> Some (["c3";"d3";"e3"])
-          | [ _;"P";_;_;"P";_;_;"P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["a4";"b4";"c4"])
-          | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "P";_;_;"P";_;_; "P";_] -> Some (["e4";"f4";"g4"])
-          | [ _;_; _;_;_;_;_;_;"P";_;_;_;"P";_;_;_;_; "P";_;_;_;_;_;_] -> Some (["c5";"d5";"e5"])
-          | [ _;_;_;_;_;"P";_;_;_;_;_;_;_;"P";_;_;_;_;_;_;"P";_;_;_] -> Some   (["b6";"d6";"f6"])
-          | [ _;_; "P";_;_;_;_;_;_;_;_;_;_;_;"P";_;_;_;_;_;_;_;_; "P"] -> Some (["a7";"d7";"g7"])
-          | [ "P";_;_;"P";_;_; "P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_]  -> Some (["a1";"b2";"c3"])  //Diagonal
-          | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "P";_;_;"P";_;_; "P";_;_] -> Some (["e3";"f2";"g1"])
-          | [ _;_; "P";_;_;"P";_;_;"P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_]  -> Some (["a7";"b6";"c5"])
-          | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "P";_;_;"P";_;_; "P"] -> Some (["e5";"f6";"g7"])
-          | _ -> None
-    | O ->
-          match list with
-          | ["O";"O";"O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_]  -> Some (["a1";"a2";"a4"])  //horizontal cases
-          | [ _;_;_; "O";"O";"O"; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["b2";"b4";"b6"])
-          | [ _;_; _;_;_;_; "O";"O";"O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["c3";"c4";"c5"])
-          | [ _;_; _;_;_;_; _;_;_;"O";"O";"O";_;_;_;_;_;_;_;_;_;_;_;_] -> Some(["d1";"d2";"d3"])
-          | [ _;_;_;_;_;_;_;_;_;_;_;_;"O";"O";"O";_;_;_;_;_;_;_;_;_] -> Some (["d5";"d6";"d7"])
-          | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;"O";"O";"O";_;_;_;_;_;_] -> Some (["e3"; "e4"; "e5"])
-          | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;"O";"O";"O";_;_;_] -> Some (["f2";"f4";"f6"])
-          | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_; _;_;_; "O";"O";"O"]  -> Some (["g1"; "g4"; "g7"])
-          | [ "O";_;_;_;_;_;_;_;_; "O";_;_;_;_;_;_;_;_;_;_;"O";_;_;_] -> Some (["a1";"d1";"g1"])  //vertical cases
-          | [ _;_; _;"O";_;_;_;_;_;_;"O";_;_;_;_;_;_;_;"O";_;_; _;_;_] -> Some (["b2";"d2";"f2"])
-          | [ _;_;_;_;_;_; "O";_;_;_;_;"O";_;_;_; "O";_;_;_;_;_;_;_;_] -> Some (["c3";"d3";"e3"])
-          | [ _;"O";_;_;"O";_;_;"O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["a4";"b4";"c4"])
-          | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O";_] -> Some (["e4";"f4";"g4"])
-          | [ _;_; _;_;_;_;_;_;"O";_;_;_;"O";_;_;_;_; "O";_;_;_;_;_;_] -> Some (["c5";"d5";"e5"])
-          | [ _;_;_;_;_;"O";_;_;_;_;_;_;_;"O";_;_;_;_;_;_;"O";_;_;_] -> Some  (["b6";"d6";"f6"])
-          | [ _;_; "O";_;_;_;_;_;_;_;_;_;_;_;"O";_;_;_;_;_;_;_;_; "O"] -> Some (["a7";"d7";"g7"])
-          | [ "O";_;_;"O";_;_; "O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["a1";"b2";"c3"]) //Diagonal
-          | [ _;_; "O";_;_;"O";_;_;"O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (["e3";"f2";"g1"])
-          | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O";_;_] -> Some  (["a7";"b6";"c5"])
-          | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O"] -> Some (["e5";"f6";"g7"])
-          | _ -> None
-    | _ -> None *)
+let millformation list player =
+   match player with 
+   | P ->
+         match list with 
+         | ["P";"P";"P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('a',1),('a',2),('a',4))//horizontal cases
+         | [ _;_;_; "P";"P";"P"; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('b',2),('b',4),('b',6))
+         | [ _;_; _;_;_;_; "P";"P";"P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('c',3),('c',4),('c',5))
+         | [ _;_; _;_;_;_; _;_;_;"P";"P";"P";_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('d',1),('d',2),('d',3))
+         | [ _;_;_;_;_;_;_;_;_;_;_;_;"P";"P";"P";_;_;_;_;_;_;_;_;_] -> Some (('d',5),('d',6),('d', 7))
+         | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;"P";"P";"P";_;_;_;_;_;_]-> Some (('e',3), ('e',4), ('e',5))
+         | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;"P";"P";"P";_;_;_]-> Some (('f',2),('f',4),('f',6))
+         | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_; _;_;_; "P";"P";"P"] -> Some (('g',1),('g',4), ('g',7))
+         | [ "P";_;_;_;_;_;_;_;_; "P";_;_;_;_;_;_;_;_;_;_;_;"P";_;_] -> Some (('a',1),('d',1),('g',1))   //vertical cases
+         | [ _;_; _;"P";_;_;_;_;_;_;"P";_;_;_;_;_;_;_;"P";_;_; _;_;_] -> Some (('b',2),('d',2),('f',2))
+         | [ _;_;_;_;_;_; "P";_;_;_;_;"P";_;_;_; "P";_;_;_;_;_;_;_;_] -> Some (('c',3),('d',3),('e',3))
+         | [ _;"P";_;_;"P";_;_;"P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('a',4),('b',4),('c',4))
+         | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "P";_;_;"P";_;_; "P";_] -> Some (('e',4),('f',4),('g',4))
+         | [ _;_; _;_;_;_;_;_;"P";_;_;_;"P";_;_;_;_; "P";_;_;_;_;_;_] -> Some (('c',5),('d',5),('e',5))
+         | [ _;_;_;_;_;"P";_;_;_;_;_;_;_;"P";_;_;_;_;_;_;"P";_;_;_] -> Some (('b',6),('d',6),('f',6))
+         | [ _;_; "P";_;_;_;_;_;_;_;_;_;_;_;"P";_;_;_;_;_;_;_;_; "P"] -> Some (('a',7),('d',7),('g',7))
+         | [ "P";_;_;"P";_;_; "P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_]  -> Some (('a',1),('b',2),('c',3))  //Diagonal
+         | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "P";_;_;"P";_;_; "P";_;_] -> Some (('e',3),('f',2),('g',1))
+         | [ _;_; "P";_;_;"P";_;_;"P";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_]  -> Some (('a',7),('b',6),('c',5))
+         | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "P";_;_;"P";_;_; "P"] -> Some (('e',5),('f',6),('g',7))
+         | _ -> None
+   | O ->
+         match list with 
+         | ["O";"O";"O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_]  -> Some (('a',1),('a',2),('a',4))   //horizontal cases
+         | [ _;_;_; "O";"O";"O"; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some(('b',2),('b',4),('b',6))
+         | [ _;_; _;_;_;_; "O";"O";"O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('c',3),('c',4),('c',5))
+         | [ _;_; _;_;_;_; _;_;_;"O";"O";"O";_;_;_;_;_;_;_;_;_;_;_;_] -> Some(('d',1),('d',2),('d',3))
+         | [ _;_;_;_;_;_;_;_;_;_;_;_;"O";"O";"O";_;_;_;_;_;_;_;_;_] -> Some (('d',5),('d',6),('d', 7))
+         | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;"O";"O";"O";_;_;_;_;_;_] -> Some (('e',3), ('e',4), ('e',5))
+         | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;"O";"O";"O";_;_;_] -> Some (('f',2),('f',4),('f',6))
+         | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_; _;_;_; "O";"O";"O"]  -> Some (('g',1),('g',4), ('g',7))
+         | [ "O";_;_;_;_;_;_;_;_; "O";_;_;_;_;_;_;_;_;_;_;"O";_;_;_] -> Some (('a',1),('d',1),('g',1))//vertical cases
+         | [ _;_; _;"O";_;_;_;_;_;_;"O";_;_;_;_;_;_;_;"O";_;_; _;_;_] -> Some (('b',2),('d',2),('f',2))
+         | [ _;_;_;_;_;_; "O";_;_;_;_;"O";_;_;_; "O";_;_;_;_;_;_;_;_] -> Some (('c',3),('d',3),('e',3))
+         | [ _;"O";_;_;"O";_;_;"O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('a',4),('b',4),('c',4))
+         | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O";_] -> Some  (('e',4),('f',4),('g',4))
+         | [ _;_; _;_;_;_;_;_;"O";_;_;_;"O";_;_;_;_; "O";_;_;_;_;_;_] -> Some (('c',5),('d',5),('e',5))
+         | [ _;_;_;_;_;"O";_;_;_;_;_;_;_;"O";_;_;_;_;_;_;"O";_;_;_] -> Some  (('b',6),('d',6),('f',6))
+         | [ _;_; "O";_;_;_;_;_;_;_;_;_;_;_;"O";_;_;_;_;_;_;_;_; "O"] -> Some(('a',7),('d',7),('g',7))
+         | [ "O";_;_;"O";_;_; "O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('a',1),('b',2),('c',3))  //Diagonal
+         | [ _;_; "O";_;_;"O";_;_;"O";_;_;_;_;_;_;_;_;_;_;_;_;_;_;_] -> Some (('e',3),('f',2),('g',1))
+         | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O";_;_] -> Some  (('a',7),('b',6),('c',5))
+         | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O"] -> Some (('e',5),('f',6),('g',7))
+         | _ -> None 
+    
+
+let shootingcows position (playersdetails: Game) (playerkills: PlayerInfo) (playerkilled: PlayerInfo)  =
+  let rec updatinglists place playerlists oldkilled killedlist =
+          match playerkilled.Cows, playerkills.MillHas with
+          | [], _::_::_::rest -> 
+                     let c ={playerlists.playerkills with MillHas = rest};  
+                     let b = {c; d}
+                     b
+          | x::rest, _ ->
+                       match place=x with
+                       | false -> updatinglists place playerlists rest::oldkilled x::killedlist 
+                       | _     -> updatinglists place playerlists rest::oldkilled killedlist 
+  updatinglists position playersdetails [] []
+
+
+
+let checkandaddmills (inputplayer:PlayerInfo) inputlist =
+   let rec addingmills (whoseplaying: PlayerInfo) previoustuple =
+      let milltuples = millformation inputlist whoseplaying.Name
+      match milltuples = previoustuple with 
+      | true -> addingmills whoseplaying previoustuple
+      | false -> 
+               match milltuples with 
+               | None -> whoseplaying
+               | Some ((b,c),(d,e),(f,g)) -> 
+                           match whoseplaying.MillHas with
+                           | [] -> addingmills {whoseplaying with MillHas= (b,c)::(d,e)::(f,g)::[]} previoustuple
+                           | x::rest -> addingmills {whoseplaying with MillHas= (b,c)::(d,e)::(f,g)::x::rest} previoustuple 
+   addingmills inputplayer None
+                    
+
 let validposition place inputlist turn iteration =
    let rec ispositiontaken position mainlist whose_turn =
          match List.exists((=) position) mainlist with
@@ -169,6 +200,30 @@ let playing_initate input =
                  printboard output
                  counter (iteration+1) (swapPlayer(whose_turn)) output updateplayers
     counter 0 whoseturn input playerdata
+
+let millandmoving mainlist playerdetails =
+     printfn "Lets check for Mills"
+     let player1 = checkandaddmills playerdetails.p1 mainlist
+     printfn "Player P, you have the following mills: %A " player1.MillHas
+     let player2 = checkandaddmills playerdetails.p2 mainlist
+     printfn "Player O, you have the following mills: %A " player2.MillHas
+     let whosegoing =
+       match player1.MillHas, player2.MillHas with 
+       | [],[] -> printfn "Lets fly, choose another position for example position " 
+                  let position = validposition (System.Console.ReadLine())
+                  let _, stringconversionint = System.Int32.TryParse ((sprintf "%c" position.[1]))
+                  let constrain = position.[0],stringconversionint
+                  movingcows constrain 
+
+       | [],_  -> printfn "Player O gets to kill a cow"
+                  printfn "Which of Player's P cow do you want to get rid of "
+                  let position = validposition (System.Console.ReadLine())
+                  let _, stringconversionint = System.Int32.TryParse ((sprintf "%c" position.[1]))
+                  let constrain = position.[0],stringconversionint
+                  shootingcows constrain playerdetails.p1 playerdetails.p2
+       | _ ,[] -> prinfn "Player P gets to kill a cow"
+      
+
 
 
 
