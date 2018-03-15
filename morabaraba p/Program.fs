@@ -105,21 +105,83 @@ let millformation list player =
          | [ _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O";_;_] -> Some  (('a',7),('b',6),('c',5))
          | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O"] -> Some (('e',5),('f',6),('g',7))
          | _ -> None 
+
+let checkingpostionto position inputlist =   //List.exist
+   List.exists ((=) position) inputlist
+
+let possiblemovepositions position = 
+  match position with    
+  | ('a',1) -> [('a',4);('b',2);('d',1)]
+  | ('a',4) ->[('a',7);('b',4);('a',1)]
+  | ('a',7) ->[ ('a',4);('b',6); ('d',7)]
+  | ('b',2) ->[ ('a',1); ('b',4);('c',3);('d',2)]
+  | ('b',4) ->[ ('a',4);('b',6); ('c',4);('b',2)]
+  | ('b',6) ->[ ('a',7); ('d',6);('c',5); ('b',4)]
+  | ('c',3) ->[('c',4); ('b',2);('d',3)] 
+  | ('c',4) ->[('c',5);('b',4);('d',3)]
+  | ('c',5) ->[('b',6);('d',5);('c',4)]
+  | ('d',1) ->[('a',1);('d',2);('g',1)]
+  | ('d',2) ->[('d',1);('b',2); ('d',3); ('f',2) ]
+  | ('d',3) ->[('c',3);('e',3); ('d',2)]
+  | ('d',5) ->[('c',5);('e',5);('d',6)]
+  | ('d',6) ->[ ('b',6);('d',7);('f',6); ('d',5)]
+  | ('d',7) ->[('a',7); ('g',7);('d',6)]
+  | ('e',3) ->[('d',3);('e',4);('f',2)]
+  | ('e',4) ->[('e',5); ('f',4);('e',3) ]
+  | ('e',5) ->[('d',5);('e',4);('f',6)]
+  | ('f',2) ->[('e',3);('f',4);('d',2);('g',1) ]
+  | ('f',4) ->[('e',4);('f',6);('g',4); ('f',2)]
+  | ('f',6) ->[('d',6);('g',7);('e',5);('f',4)]
+  | ('g',1) ->[ ('d',1);('f',2); ('g',4)]
+  | ('g',4) ->[('f',4);('g',7);('g',1)]
+  | ('g',7) ->[('g',4);('f',6);('d',7)]
+  | _ -> []
+  
+
+let flying (whosemoving: PlayerInfo) positionto positionfrom =
+ let updatedlist = 
+    let rec changeoccurs playeroldlist playernewlist  =
+        match playeroldlist  with
+        | [] -> List.rev playernewlist
+        | x::rest -> 
+               match positionfrom=x with
+               | true -> changeoccurs rest (positionto::playernewlist) 
+               | _ -> changeoccurs rest (x::playernewlist)
+    changeoccurs whosemoving.Cows []
+ {whosemoving with Cows= updatedlist}  
+
+let updateboardlist  (whosemoving: PlayerInfo) positionto positionfrom mainlist=
+  let player1orplayer2 = 
+      match whosemoving.Name with
+      | P -> "P"
+      | O -> "O"
+  let rec changeboard workinglist checklist newlist =
+        match workinglist, checklist with
+        | [],[] ->  printboard (List.rev newlist)
+                    List.rev newlist                   
+        | m::mainrest, i::initialrest ->
+                  match positionfrom =i,positionto=m with      //a1,P,a7 a4 to a4  a1.a4.p
+                  | true, false -> changeboard mainrest initialrest (positionfrom::newlist)
+                  | false, true -> changeboard mainrest initialrest (player1orplayer2::newlist)
+                  | _,_ -> changeboard mainrest initialrest (m::newlist)
+  changeboard mainlist initiallist [] 
     
+let milldisband (whoselostaMill: PlayerInfo)=
+      match whoselostaMill.MillHas with
+      | _::_::_::rest -> {whoselostaMill with MillHas = rest} 
+      | _ -> {whoselostaMill with MillHas = []} 
 
-let shootingcows position (playersdetails: Game) (playerkills: PlayerInfo) (playerkilled: PlayerInfo)  =
-  let rec updatinglists place playerlists oldkilled killedlist =
-          match playerkilled.Cows, playerkills.MillHas with
-          | [], _::_::_::rest -> 
-                     let c ={playerlists.playerkills with MillHas = rest};  
-                     let b = {c; d}
-                     b
-          | x::rest, _ ->
-                       match place=x with
-                       | false -> updatinglists place playerlists rest::oldkilled x::killedlist 
-                       | _     -> updatinglists place playerlists rest::oldkilled killedlist 
-  updatinglists position playersdetails [] []
-
+let shootingcows position (whosecowgotkilled: PlayerInfo) =
+  let updated_list =
+     let rec updatinglists position killedlist newlist=
+        match killedlist with
+        | [] -> List.rev newlist
+        | (a,b)::rest -> 
+              match position= (a,b) with
+              | true -> updatinglists position [] (rest@newlist)
+              | _ -> updatinglists position rest ((a,b)::newlist)
+     updatinglists position whosecowgotkilled.Cows []
+  {whosecowgotkilled with Cows= updated_list}   
 
 
 let checkandaddmills (inputplayer:PlayerInfo) inputlist =
