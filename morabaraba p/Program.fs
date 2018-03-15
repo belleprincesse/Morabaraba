@@ -106,39 +106,46 @@ let millformation list player =
          | [ _;_; _;_;_;_;_;_;_;_;_;_;_;_;_;_;_; "O";_;_;"O";_;_; "O"] -> Some (('e',5),('f',6),('g',7))
          | _ -> None 
 
-let checkingpostionto position inputlist =   //List.exist
-   List.exists ((=) position) inputlist
 
-let possiblemovepositions position = 
-  match position with    
-  | ('a',1) -> [('a',4);('b',2);('d',1)]
-  | ('a',4) ->[('a',7);('b',4);('a',1)]
-  | ('a',7) ->[ ('a',4);('b',6); ('d',7)]
-  | ('b',2) ->[ ('a',1); ('b',4);('c',3);('d',2)]
-  | ('b',4) ->[ ('a',4);('b',6); ('c',4);('b',2)]
-  | ('b',6) ->[ ('a',7); ('d',6);('c',5); ('b',4)]
-  | ('c',3) ->[('c',4); ('b',2);('d',3)] 
-  | ('c',4) ->[('c',5);('b',4);('d',3)]
-  | ('c',5) ->[('b',6);('d',5);('c',4)]
-  | ('d',1) ->[('a',1);('d',2);('g',1)]
-  | ('d',2) ->[('d',1);('b',2); ('d',3); ('f',2) ]
-  | ('d',3) ->[('c',3);('e',3); ('d',2)]
-  | ('d',5) ->[('c',5);('e',5);('d',6)]
-  | ('d',6) ->[ ('b',6);('d',7);('f',6); ('d',5)]
-  | ('d',7) ->[('a',7); ('g',7);('d',6)]
-  | ('e',3) ->[('d',3);('e',4);('f',2)]
-  | ('e',4) ->[('e',5); ('f',4);('e',3) ]
-  | ('e',5) ->[('d',5);('e',4);('f',6)]
-  | ('f',2) ->[('e',3);('f',4);('d',2);('g',1) ]
-  | ('f',4) ->[('e',4);('f',6);('g',4); ('f',2)]
-  | ('f',6) ->[('d',6);('g',7);('e',5);('f',4)]
-  | ('g',1) ->[ ('d',1);('f',2); ('g',4)]
-  | ('g',4) ->[('f',4);('g',7);('g',1)]
-  | ('g',7) ->[('g',4);('f',6);('d',7)]
-  | _ -> []
-  
+let possiblemovepositions position inputlist =    //provides all the possible cow moves based on player's position
+  let movelists = 
+               match position with    
+               | ('a',1) -> ["a4";"b2";"d1"]
+               | ('a',4) ->["a7";"b4";"a1"]
+               | ('a',7) ->[ "a4";"b6"; "d7"]
+               | ('b',2) ->[ "a1";"b4"; "c3";"d2"]
+               | ('b',4) ->[ "a4";"b6";"c4";"b2"]
+               | ('b',6) ->[ "a7"; "d6";"c5";"b4"]
+               | ('c',3) ->["c4"; "b2";"d3"] 
+               | ('c',4) ->["c5";"b4";"d3"]
+               | ('c',5) ->["b6";"d5";"c4"]
+               | ('d',1) ->["a1";"d2"; "g1"]
+               | ('d',2) ->["d1";"b2"; "d3"; "f2" ]
+               | ('d',3) ->["c3";"e3";"d2"]
+               | ('d',5) ->["c5"; "e5";"d6"]
+               | ('d',6) ->[ "b6";"d7";"f6";"d5"]
+               | ('d',7) ->["a7"; "g7";"d6"]
+               | ('e',3) ->["d3";"e4";"f2"]
+               | ('e',4) ->["e5"; "f4";"e3"]
+               | ('e',5) ->["d5"; "e4";"f6"]
+               | ('f',2) ->["e3";"f4";"d2";"g1" ]
+               | ('f',4) ->["e4";"f6";"g4"; "f2"]
+               | ('f',6) ->["d6";"g7";"e5";"f4"]
+               | ('g',1) ->[ "d1";"f2"; "g4"]
+               | ('g',4) ->["f4";"g7";"g1"]
+               | ('g',7) ->["g4";"f6";"d7"]
+               | _ -> []
+  let rec checking possiblemoves newlist=
+     match possiblemoves with
+     | [] -> List.rev newlist
+     | x::rest -> 
+          match List.exists ((=)x) inputlist with
+          | true -> checking rest (x::newlist)
+          | _ -> checking rest newlist
+  checking movelists []
+     
 
-let flying (whosemoving: PlayerInfo) positionto positionfrom =
+let flying (whosemoving: PlayerInfo) positionto positionfrom =  //function that allows free movement across the board
  let updatedlist = 
     let rec changeoccurs playeroldlist playernewlist  =
         match playeroldlist  with
@@ -150,28 +157,42 @@ let flying (whosemoving: PlayerInfo) positionto positionfrom =
     changeoccurs whosemoving.Cows []
  {whosemoving with Cows= updatedlist}  
 
-let updateboardlist  (whosemoving: PlayerInfo) positionto positionfrom mainlist=
+let updateboardlist  (whosemoving: PlayerInfo) positionto positionfrom mainlist=    //changes the board because of flying or restricted positional moves
   let player1orplayer2 = 
       match whosemoving.Name with
       | P -> "P"
       | O -> "O"
   let rec changeboard workinglist checklist newlist =
-        match workinglist, checklist with
-        | [],[] ->  printboard (List.rev newlist)
-                    List.rev newlist                   
+        match workinglist, checklist with                
         | m::mainrest, i::initialrest ->
                   match positionfrom =i,positionto=m with      //a1,P,a7 a4 to a4  a1.a4.p
                   | true, false -> changeboard mainrest initialrest (positionfrom::newlist)
                   | false, true -> changeboard mainrest initialrest (player1orplayer2::newlist)
                   | _,_ -> changeboard mainrest initialrest (m::newlist)
+        | _,_ ->  
+                  printboard (List.rev newlist)
+                  List.rev newlist   
   changeboard mainlist initiallist [] 
-    
-let milldisband (whoselostaMill: PlayerInfo)=
+
+let updatingboard position mainlist=                                              //updates board after cow shoot
+   let rec changingboard inputlist checklist newlist =
+      match inputlist, checklist with
+      | m:: mainrest, i::initialrest ->
+                                 match position = i with 
+                                 |  true -> changingboard mainrest initialrest (position::newlist)
+                                 |  _  ->  changingboard mainrest initialrest (m::newlist)
+      | _,_ ->
+               printboard (List.rev newlist)         
+               List.rev newlist 
+   changingboard mainlist initiallist []                          
+       
+
+let milldisband (whoselostaMill: PlayerInfo)=               //gets rid of one mill after player kills a cow
       match whoselostaMill.MillHas with
       | _::_::_::rest -> {whoselostaMill with MillHas = rest} 
       | _ -> {whoselostaMill with MillHas = []} 
 
-let shootingcows position (whosecowgotkilled: PlayerInfo) =
+let shootingcows position (whosecowgotkilled: PlayerInfo) =  //shooting happens here and updates the victim's list
   let updated_list =
      let rec updatinglists position killedlist newlist=
         match killedlist with
@@ -184,7 +205,7 @@ let shootingcows position (whosecowgotkilled: PlayerInfo) =
   {whosecowgotkilled with Cows= updated_list}   
 
 
-let checkandaddmills (inputplayer:PlayerInfo) inputlist =
+let checkandaddmills (inputplayer:PlayerInfo) inputlist =    //checks whether each player has a mill or not
    let rec addingmills (whoseplaying: PlayerInfo) previoustuple =
       let milltuples = millformation inputlist whoseplaying.Name
       match milltuples = previoustuple with 
@@ -197,9 +218,22 @@ let checkandaddmills (inputplayer:PlayerInfo) inputlist =
                            | [] -> addingmills {whoseplaying with MillHas= (b,c)::(d,e)::(f,g)::[]} previoustuple
                            | x::rest -> addingmills {whoseplaying with MillHas= (b,c)::(d,e)::(f,g)::x::rest} previoustuple 
    addingmills inputplayer None
-                    
+ 
+let validpositionandconversion position inputlist=       //this function checks the position exists on the board and converts into a char*int to prepare insert into PlayerInfo
+  let conversionposition= 
+    let rec findingvalidposition place =
+       match  List.exists ((=) place) inputlist with
+       | true -> place
+       | _ -> 
+              printfn "Try again, pick another valid cow position"
+              let potentialposition = System.Console.ReadLine() 
+              findingvalidposition potentialposition
+    findingvalidposition position 
+  let _, stringconversionint = System.Int32.TryParse ((sprintf "%c" conversionposition.[1]))
+  let constrain = conversionposition.[0],stringconversionint 
+  constrain
 
-let validposition place inputlist turn iteration =
+let validposition place inputlist turn iteration =    //checks the valid position for the placing the cows at the start of the game 
    let rec ispositiontaken position mainlist whose_turn =
          match List.exists((=) position) mainlist with
          | false -> 
@@ -214,7 +248,7 @@ let validposition place inputlist turn iteration =
    ispositiontaken place inputlist turn
    
     
-let whichplayerinput (whoseplaying:Game) position player_turn=
+let whichplayerinput (whoseplaying:Game) position player_turn=  //updates each playerinfo when placing the cows happen
    match player_turn with 
     | P ->
          let c = {p1={whoseplaying.p1 with IntitalCows=whoseplaying.p2.IntitalCows+1; Cows =position::[]}; p2= {whoseplaying.p2 with IntitalCows=whoseplaying.p2.IntitalCows; Cows = whoseplaying.p2.Cows}}
@@ -223,7 +257,7 @@ let whichplayerinput (whoseplaying:Game) position player_turn=
          let c = {p1= {whoseplaying.p1 with IntitalCows=whoseplaying.p1.IntitalCows; Cows = whoseplaying.p1.Cows}; p2= {whoseplaying.p2 with IntitalCows= whoseplaying.p2.IntitalCows+1; Cows =position::[]}}
          c
 
-let index (mylists:string list) (number:string) (player:Player) =
+let index (mylists:string list) (number:string) (player:Player) =    //controls placement
   let rec placement (mylist:string list) (letter:string)  (newlist:string list) (playername:Player)  =
      match mylist with 
      |[]-> List.rev newlist
@@ -237,8 +271,41 @@ let index (mylists:string list) (number:string) (player:Player) =
                
          |_ -> placement rest letter (x::newlist) playername 
   placement mylists number [] player
+     
 
-let playing_initate input = 
+let mainmoving (playerdetails: Game) inputlist =                  //main moving function that calls all related moving or flying functions 
+   printfn "Sorry, you lost a cow but you have a chance to move towards safety. Which cow's position do you want to move" 
+   let positionfrom = validpositionandconversion (System.Console.ReadLine()) inputlist
+   let convertedposition = possiblemovepositions  positionfrom 
+   printfn "Which positions you can go: %A, where would you like to go?" convertedposition
+   let positionto = validpositionandconversion (System.Console.ReadLine()) inputlist
+   let updateplayer = flying playerdetails.p1 positionto positionfrom
+   let newplayerdata = {p1= updateplayer; p2 = playerdetails.p2}
+   let updated_boardlist = updateboardlist updateplayer (sprintf "%A" positionto) (sprintf "%A" positionfrom) inputlist
+   newplayerdata updated_boardlist 
+   
+
+let mainmill inputlist playerdetails =                //main mill function that calls all related mill functions 
+    printfn "Lets check if anyone has mills"
+    let playermillupdate1 = checkandaddmills playerdetails.p1 inputlist
+    printfn "PlayerP, you have the following mills: %A" playermillupdate1.MillHas 
+    let playermillupdate2 = checkandaddmills playerdetails.p2 inputlist
+    printfn " PlayerO, you have the following mills: %A" playermillupdate2.MillHas 
+    let whogoesfirst, whoselosescow =
+        match playermillupdate1.MillHas  with
+        | [] -> playermillupdate2, playermillupdate1
+        | _  ->  playermillupdate1, playermillupdate2   
+    printfn "%A, goes first and select a cow to shoot. Please provide the position" whogoesfirst
+    let position = System.Console.ReadLine() 
+    let constrain = validpositionandconversion position inputlist
+    let Playerwholostcow = shootingcows constrain whoselosescow
+    let Playerwholosesmill = milldisband whogoesfirst
+    let newplayerdata = {p1=Playerwholostcow;p2=Playerwholosesmill}
+    let updatedlist = updatingboard position inputlist
+newplayerdata updatedlist
+         
+
+let playing_initate input =                          //function that encompasses the start of the game, which places each cow
     printfn "Enter any key to begin the game" //function puts in the position of the cows
     printboard input
     let p = {Name= P; IntitalCows= 0 ; MillHas= []; Cows =[]}
@@ -253,8 +320,8 @@ let playing_initate input =
          let _, stringconversionint = System.Int32.TryParse ((sprintf "%c" position.[1]))
          let constrain = position.[0],stringconversionint
          match iteration, gameplayers.p1.IntitalCows with
-         | 24, 12 -> 
-                     inputlist
+         | 24, 12 -> mainmill inputlist playerdata
+                     
          | _, _   -> 
                  let output = index inputlist position whose_turn
                  let updateplayers = whichplayerinput gameplayers constrain whose_turn
@@ -263,95 +330,6 @@ let playing_initate input =
                  counter (iteration+1) (swapPlayer(whose_turn)) output updateplayers
     counter 0 whoseturn input playerdata
 
-let millandmoving mainlist playerdetails =
-     printfn "Lets check for Mills"
-     let player1 = checkandaddmills playerdetails.p1 mainlist
-     printfn "Player P, you have the following mills: %A " player1.MillHas
-     let player2 = checkandaddmills playerdetails.p2 mainlist
-     printfn "Player O, you have the following mills: %A " player2.MillHas
-     let whosegoing =
-       match player1.MillHas, player2.MillHas with 
-       | [],[] -> printfn "Lets fly, choose another position for example position " 
-                  let position = validposition (System.Console.ReadLine())
-                  let _, stringconversionint = System.Int32.TryParse ((sprintf "%c" position.[1]))
-                  let constrain = position.[0],stringconversionint
-                  movingcows constrain 
-
-       | [],_  -> printfn "Player O gets to kill a cow"
-                  printfn "Which of Player's P cow do you want to get rid of "
-                  let position = validposition (System.Console.ReadLine())
-                  let _, stringconversionint = System.Int32.TryParse ((sprintf "%c" position.[1]))
-                  let constrain = position.[0],stringconversionint
-                  shootingcows constrain playerdetails.p1 playerdetails.p2
-       | _ ,[] -> prinfn "Player P gets to kill a cow"
-      
-
-
-
-
-   
-
- 
-
-
-
-
-(*let Mainresult input =
-  match input.p1.InitialCows,input.p2.InitialCows with
-  |0,0->Winner
-  |12,12->Ongoing
-
-let WhoseTurn input=
-    match input.p1.InitialCows>0 with 
-    |true->placetoplace input|>(fun choosemove -> (printfn "Choose a position to place the cow from these %A",choosemove))
-           
-          //checks the placement 
-    |false-> //checks the cow for avaliabble places to move
-
-let placetoplace input=
-    let checklist= [input.p1.Cows@input.p2.Cows] 
-    let freespace free=List.filter((=) free )initiallist    
-    freespace checklist//function that checks the main list with the occupied spaces and returns a list with uncccupied places
-
-let usedSpace input 
-    [input.p1.Cows@input.p2.Cows]|>List.map initiallist checkSpace  
-
-let checkposition listlist
-    //function that compares lists
-    List.filter
-    
-
-
-let rec runGame newgame =
-    let rec playAgain () =
-        printfn "Play again? [y/N] "
-        match System.Console.ReadLine() with
-        | "Y" | "y" -> runGame newgame 
-        |"N"|"n"    -> printfn "goodbye"
-        | _ -> playAgain ()
-    let rec continueGame game =
-        match Mainresult game with 
-        |Winner ->playAgain()
-        |Draw-> playAgain ()
-        |Ongoing->game |>SwapPlayer|>continueGame
-    continueGame newgame
-    let start ()=
-       printf "which name do you want to use?"
-       let player1={Name=System.Console.RealLine();Cows=[];InitialCows=12;millHas=[]}
-       printf "which name do you want to use?"
-       let player2={Name=System.Console.RealLine();Cows=[];InitialCows=12;millHas=[]}
-       {p1=player1;p2=player2}
-
-//take in the initiallist replace with the p for 1st play and redraw the board
-  
-let position initiallist =
-   printfn "where do you want to place your cow %A" initiallist
-   b=System.Console.ReadLine()*)
-    
- 
-     
-
-    
 
 
 
@@ -361,67 +339,6 @@ let main argv =
     
     playing_initate initiallist |> printboard
    
-   
     System.Console.ReadKey()|>ignore
-    (*printboard initiallist
-    printfn "Please choose a letter between [P\O]"
-    let playername = System.Console.ReadLine()
-    printfn "Choose a position in one of these %A" initiallist
-    let b=System.Console.ReadLine()
-    let newlist=index initiallist b playername 
-    printfn "you are player O"
-    let playername = System.Console.ReadLine()
-    printfn "Choose a position in one of these except the p positions %A" newlist
-    printboard*)
-
-    //System.Console.ReadKey()|>ignore
-    0 // return an integer exit code
-   
-
-
-(*
-
-let Mainresult input =
-  match input.p1.InitialCows,input.p2.InitialCows with
-  |0,0->
-  |12,12->Ongoing
-
-let WhoseTurn input=
-    match input.p1.InitialCows>0 with 
-    |true->placetoplace input|>(fun choosemove -> (printfn "Choose a position to place the cow from these %A",choosemove))
-           
-          //checks the placement 
-    |false-> //checks the cow for avaliabble places to move
-
-let placetoplace input=
-    let free=usedSpace input
-    let //function that checks the main list with the occupied spaces 
-
-let usedSpace input 
-    (input.p1.Cows@input.p2.Cows)|>List.map initiallist 
-
-let checkposition listlist
-    
-    
-
-
-let rec runGame newgame =
-    let rec playAgain () =
-        printfn "Play again? [y/N] "
-        match System.Console.ReadLine() with
-        | "Y" | "y" -> runGame newgame 
-        |"N"|"n"    -> printfn "goodbye"
-        | _ -> playAgain ()
-    let rec continueGame game =
-        match Mainresult game with 
-        |Winner ->playAgain()
-        |Draw-> playAgain ()
-        |Ongoing->game|>WhoseTurn|>Millrecord|>swapPlayer|>continueGame
-    continueGame newgame
-    let start ()=
-       printf "which name do you want to use?"
-       let player1={Name=System.Console.RealLine();Cows=[];InitialCows=12;millHas=[]}
-       printf "which name do you want to use?"
-       let player2={Name=System.Console.RealLine();Cows=[];InitialCows=12;millHas=[]}
-       {p1=player1;p2=player2}*)
+    0
     
